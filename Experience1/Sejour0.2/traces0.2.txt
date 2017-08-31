@@ -1,0 +1,37 @@
+#nombre de zones : 
+2
+#nombre d'individus : 
+3
+#nombre de points de rencontre :
+1
+#taux d'individus habitants aux points de rencontres : 
+0.0
+#taux de déplacement :
+0.6
+#taux de séjour :
+0.2
+#
+#lieux de résidence :
+(H2, Z2)
+(H3, Z1)
+(H1, Z2)
+#
+#patron de déplacements :
+(H2, ('"\'Z2\'"', 0.5411681510527964, 0.2, ["''"]))
+(H1, ('"\'Z2\'"', 0.4377864519012865, 0.2, ['"\'Z1\'"']))
+#
+#liste des individus mobiles
+['H1']
+#
+#paths
+(H2, [('Z2', 1.0)])
+(H3, [('Z1', 1.0)])
+(H1, [('Z2', 0.8), ('Z1', 0.2)])
+#
+#presences
+(Z1, [('H1', 0.2), ('H3', 1.0)])
+(Z2, [('H2', 1.0), ('H1', 0.8)])
+#
+#liste des endémicités :
+(Z1, 1.0)
+(Z2, 0.2)
