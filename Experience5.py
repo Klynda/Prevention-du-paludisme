@@ -12,6 +12,7 @@ from Traces import stockerTraces, lireTraces
 from ModeleEtat3 import Modele
 import cPickle as pickle
 from Traces import lireTraces
+import random
 import os
 
 #nombre de pas de temps
@@ -42,8 +43,8 @@ fic = path+"traces.txt"
 N, M, pointRencontre, alpha, seuil, tauxSejour, residence, paternIndividus, listIndMobiles, paths, presences, endemicites = lireTraces(fic)
 
 #permet de générer les mêmes seuil d'exposition des individus d'un test à l'autre
-
-m = Modele(N, M)
+g = random.Random()
+m = Modele(N, M, g.seed(1))
 m.residences = residence
 m.initZones(endemicites)
 zones = m.getZones()
@@ -60,25 +61,56 @@ zones['Z1'].Iv[0] = 30
 zones['Z2'].Iv[0] = 30
 #Rappel : le nombre de vecteur est initialisé à 100 par défaut
 
+###################################
+#première démoustication :
 '''
-# Démoustication à t=10 de Z1
-m.tDem = 10
+# Démoustication à t=12 de Z1
+m.tDem = 12
 m.pDem = 0.95
 m.idDem = 'Z1'
 '''
 
 
 '''
-# Démoustication à t=10 de Z2'''
+# Démoustication à t=12 de Z2'''
 
-
-m.tDem = 10
+m.tDem = 12
 m.pDem = 0.95
 m.idDem = 'Z2'
 
 
+'''
+# Démoustication à t=12 de Z3
+
+m.tDem = 12
+m.pDem = 0.95
+m.idDem = 'Z3'
+'''
+
+#################################
+#deuxième démoustication
+'''
+# Démoustication à t=12 de Z1
+m.tDem = 72
+m.pDem = 0.95
+m.idDem = 'Z1'
+
+m.idDem = 'Z2'
+
+m.idDem = 'Z3'
+'''
+
 while m.cTime <= nbStep :
     t= m.cTime
+    if t > 12 :
+        m.tDem = 72
+        m.pDem = 0.95
+        #m.idDem = 'Z1'
+                
+        #m.idDem = 'Z2'
+        
+        #m.idDem = 'Z3'
+        
     print "T == "+str(t)
     #initialisation des déplacements
     m.initTravels(paths, presences)
@@ -87,6 +119,7 @@ while m.cTime <= nbStep :
 fic = path + "modele.p"
 #fic = path + "modele_dem1.p"
 #fic = path + "modele_dem2.p"
+#fic = path + "modele_dem3.p"
 fh = open (fic, 'wb')
 pickle.dump(m,fh,pickle.HIGHEST_PROTOCOL)
 fh.close()

@@ -109,35 +109,51 @@ class Modele(object):
             self.zones[idZ].setPresence(presence, self.cTime)
         
     
-    def initStatesAndProba(self, infectedProp) :
+    def initStatesAndProba(self, infectedProp=None, recoverProp = None) :
         '''
-        Introduit une proportion d'individus infectés et initialise les probabilités
+        Introduit une proportion d'individus infectés ou rétablis et initialise les probabilités
         en fonction de cette proportion
         
         Les individus infectés sont choisis aléatoirement sans distinguer les 
         fixes des mobiles
+        
+        À AMÉLIORER -
         '''
         listI = []
+        listR = []
         
         self.cTime=0
         g = random.Random()
         g.seed()
         
+        listIndice = list(np.arange(1, self.M+1))
+        print listIndice
         
-        nbI = int(self.M* infectedProp)
-        liste = []
-        for i in range(nbI):
-            j = g.randint(1, self.M)
-            while liste.__contains__(j) :
-                j = g.randint(1, self.M)
-            liste.append(j)
-            humanId = "H"+str(j)
-            self.humans[humanId].setState(Etat('I', 0), self.cTime) #mettre etat à I(0)
-            self.humans[humanId].setPse(0, self.cTime)
-            listI.append(humanId)
-            # ajouter les zones à mettre à jour
+        if infectedProp != None :
+            nbI = int(self.M* infectedProp)
+            for i in range(nbI):
+                j = g.randint(0, len(listIndice)-1)
+                print "liste :"+str(listIndice)
+                print "indice retenu :"+str(j)
+                k = listIndice.pop(j)
+                print "id choisi : "+str(k)
+                humanId = "H"+str(k)
+                self.humans[humanId].setState(Etat('I', 0), self.cTime) #mettre etat à I(0)
+                self.humans[humanId].setPse(0, self.cTime)
+                listI.append(humanId)
+        print listI    
         
+        if recoverProp != None :
+            nbR = int(self.M* recoverProp)
+            for i in range(nbR):
+                j = g.randint(0, len(listIndice)-1)
+                k = listIndice.pop(j)
+                humanId = "H"+str(k)
+                self.humans[humanId].setState(Etat('R', 0), self.cTime) #mettre etat à I(0)
+                self.humans[humanId].setPse(0, self.cTime)
+                listR.append(humanId)
         
+        ir = (listI, listR)
         #mise à jour des zones
         for i in range(1, self.N+1, 1):
             
@@ -167,9 +183,9 @@ class Modele(object):
                 if label == 'E' :
                     zone.Ehc[self.cTime] += duration
                     zone.Nhc[self.cTime] += duration
-        return listI
+        return ir
     
-    def initStatesAndProba2(self, listI) :
+    def initStatesAndProba2(self, listI=None, listR=None) :
         '''
         SUPPOSE QUE LES INDIVIDUS AIENT DÉJÀ ÉTÉ INITIALISÉS avec initTravels
         Introduit une proportion d'individus infectés et initialise les probabilités
@@ -183,11 +199,14 @@ class Modele(object):
         g = random.Random()
         g.seed()
         
+        if listI != None :
+            for humanId in listI :
+                self.humans[humanId].setState(Etat('I', 0), self.cTime) #mettre etat à I(0)
         
-        for humanId in listI :
-            self.humans[humanId].setState(Etat('I', 0), self.cTime) #mettre etat à I(0)
-            
-                   
+        if listR != None :
+            for humanId in listR :
+                self.humans[humanId].setState(Etat('R', 0), self.cTime) #mettre etat à R(0)
+                      
         
         #mise à jour des zones
         for i in range(1, self.N+1, 1):
