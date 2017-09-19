@@ -38,6 +38,7 @@ if not os.path.exists(path):
         
 fic = path+"traces.txt"
 
+'''
 #stockerTraces(fic, N, M, pointRencontre, tauxH_PR, tauxDeplacement, tauxSejour, residence, paternsIndividus, listIndMobiles, paths, presences, endemicites)
     
 N, M, pointRencontre, alpha, seuil, tauxSejour, residence, paternIndividus, listIndMobiles, paths, presences, endemicites = lireTraces(fic)
@@ -61,71 +62,43 @@ zones['Z1'].Iv[0] = 30
 zones['Z2'].Iv[0] = 30
 #Rappel : le nombre de vecteur est initialisé à 100 par défaut
 
-###################################
-#première démoustication :
-'''
-# Démoustication à t=12 de Z1
-m.tDem = 12
-m.pDem = 0.95
-m.idDem = 'Z1'
-'''
-
-
-'''
-# Démoustication à t=12 de Z2
-
-m.tDem = 12
-m.pDem = 0.95
-m.idDem = 'Z2'
-'''
-
-'''
-# Démoustication à t=12 de Z3'''
-
-m.tDem = 12
-m.pDem = 0.95
-m.idDem = 'Z3'
-
-
-#################################
-#deuxième démoustication
-'''
-# Démoustication à t=12 de Z1
-m.tDem = 72
-m.pDem = 0.95
-m.idDem = 'Z1'
-
-m.idDem = 'Z2'
-
-m.idDem = 'Z3'
-'''
-
-while m.cTime <= nbStep :
-    t= m.cTime
-    #if t > 12 :
-        #m.tDem = 72
-        #m.pDem = 0.95
-        #m.idDem = 'Z1'
-                
-        #m.idDem = 'Z2'
-        
-        #m.idDem = 'Z3'
-        
-    print "T == "+str(t)
-    #initialisation des déplacements
-    m.initTravels(paths, presences)
-    m.updateModel()
-
-#fic = path + "modele.p"
-#fic = path + "modele_dem1.p"
-#fic = path + "modele_dem2.p"
-fic = path + "modele_dem3.p"
+fic = path+"modele_init.p"
 fh = open (fic, 'wb')
 pickle.dump(m,fh,pickle.HIGHEST_PROTOCOL)
 fh.close()
+'''
 
-from PlotZone import *
-plot_AllPropIH(zones, path, tauxSejour)
-plot_AllPropEHr(zones, path, tauxSejour)
-plot_AllPropE0(zones, path, tauxSejour)
-plot_AllPropEH(zones, path, tauxSejour)
+# décommenter le bloc et commenter la ligne en dessous pour changer paramètres modèle
+
+N, M, pointRencontre, alpha, seuil, tauxSejour, residence, paternIndividus, listIndMobiles, paths, presences, endemicites = lireTraces(fic)
+
+#identifiants des zones à démoustiquer
+idDem = ['', 'Z1', 'Z2', 'Z3']
+#pour completer le nom du fichier stocké
+idFic = ['', '_dem1', '_dem2', '_dem3']
+
+for i in range(len(idDem)):
+    fic = path + "modele_init.p"
+    fh = open(fic)
+    m = pickle.load(fh)
+    fh.close()
+    
+    m.tDem = 12
+    m.pDem = 0.95
+    m.idDem = idDem[i]
+    while m.cTime <= nbStep :
+        t= m.cTime            
+        print "T == "+str(t)
+        #initialisation des déplacements
+        m.initTravels(paths, presences)
+        m.updateModel()
+    
+    #fic = path + "modele.p"
+    #fic = path + "modele_dem1.p"
+    #fic = path + "modele_dem2.p"
+    fic = path + "modele"+idFic[i]+".p"
+    fh = open (fic, 'wb')
+    pickle.dump(m,fh,pickle.HIGHEST_PROTOCOL)
+    fh.close()
+    
+    
