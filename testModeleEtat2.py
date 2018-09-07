@@ -14,7 +14,7 @@ import os
 
 
 
-nbStep = 2
+nbStep = 200
 N =5
 pointRencontre = 2
 tauxDeplacement = 1
