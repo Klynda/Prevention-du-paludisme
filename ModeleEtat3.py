@@ -117,7 +117,10 @@ class Modele(object):
         Les individus infectés sont choisis aléatoirement sans distinguer les 
         fixes des mobiles
         
-        À AMÉLIORER -
+        Si aucune proportion n'est précisée, cela veut dire que pas d'individu infecté
+        ou rétabli
+        
+        Retourne : le couple (listI, listR)
         '''
         listI = []
         listR = []
@@ -127,21 +130,21 @@ class Modele(object):
         g.seed()
         
         listIndice = list(np.arange(1, self.M+1))
-        print listIndice
+        #print listIndice
         
         if infectedProp != None :
             nbI = int(self.M* infectedProp)
             for i in range(nbI):
                 j = g.randint(0, len(listIndice)-1)
-                print "liste :"+str(listIndice)
-                print "indice retenu :"+str(j)
+                #print "liste :"+str(listIndice)
+                #print "indice retenu :"+str(j)
                 k = listIndice.pop(j)
-                print "id choisi : "+str(k)
+                #print "id choisi : "+str(k)
                 humanId = "H"+str(k)
                 self.humans[humanId].setState(Etat('I', 0), self.cTime) #mettre etat à I(0)
                 self.humans[humanId].setPse(0, self.cTime)
                 listI.append(humanId)
-        print listI    
+        #print "liste infectés définitives :"+str(listI)
         
         if recoverProp != None :
             nbR = int(self.M* recoverProp)
@@ -183,7 +186,8 @@ class Modele(object):
                 if label == 'E' :
                     zone.Ehc[self.cTime] += duration
                     zone.Nhc[self.cTime] += duration
-        return ir
+                    
+        return ir #Retourne : le couple (listI, listR)
     
     def initStatesAndProba2(self, listI=None, listR=None) :
         '''
@@ -193,6 +197,10 @@ class Modele(object):
         
         Les individus infectés sont choisis aléatoirement sans distinguer les 
         fixes des mobiles
+        
+        À AMÉLIORER CAR NE RENVOIE QUE LES Individus INFECTÉS ON PEUT RAJOUTER L'OPTION DE RETOURNER
+        LES INDIVIDUS RÉTABLI -> NE PAS OUBLIER D'ADAPTER LE MAIN 
+        
         '''
         
         self.cTime=0
@@ -238,7 +246,7 @@ class Modele(object):
                 if label == 'E' :
                     zone.Ehc[self.cTime] += duration
                     zone.Nhc[self.cTime] += duration
-        return listI
+        return listI #à améliorer en retournant (listI, listR) SI BESOIN
             
     def initZones(self, endemicites):
         for idZ, zone in self.zones.iteritems():
