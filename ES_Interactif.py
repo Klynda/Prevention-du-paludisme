@@ -53,7 +53,7 @@ if not os.path.exists(path):
     
 fic = raw_input("Entrez le nom du fichier trace, SVP : ")
  
-pathFic = path+fic
+pathFic = path+"/"+fic
 
 stockerTraces(pathFic, N, M, pointRencontre, tauxH_PR, tauxDeplacement, tauxSejour, residence, paternsIndividus, listIndMobiles, paths, presences, endemicites)
         
